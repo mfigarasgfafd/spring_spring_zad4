@@ -11,10 +11,6 @@ public interface IVehicleRepository {
 
     boolean addVehicle(Vehicle vehicle);
 
-    //if you want use stratgy instead of simple logic:
-//    default boolean addVehicle(AddVehicleStrategy strategy){
-//        throw new UnsupportedOperationException();
-//    }
 
     boolean removeVehicle(String plate);
 

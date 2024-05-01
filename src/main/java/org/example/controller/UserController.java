@@ -25,8 +25,6 @@ public class UserController {
 
     @GetMapping("{login}")
      public ResponseEntity<UserDto> getUser(@PathVariable String login) {
-//    @GetMapping
-//    public ResponseEntity<UserDto> getUser(@RequestParam(required = true) String login) {
         UserDto userDto = userService.getUser(login);
         if (userDto != null) {
             return ResponseEntity.ok(userDto);
@@ -36,12 +34,11 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<String> createUser(@RequestBody CreateUserDto createUserDto) {
-        //todo: logika gdy nie uda sie dodac usera
-        try{
-            userService.createUser(createUserDto);
+        boolean success = userService.createUser(createUserDto);
+        if (success) {
             return ResponseEntity.ok(("User created successfully"));
-        }catch (Exception e){
-            return ResponseEntity.badRequest().body("error creating user");
+        } else {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("ERROR CREATING USER");
         }
     }
 

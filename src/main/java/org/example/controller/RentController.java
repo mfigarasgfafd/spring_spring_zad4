@@ -1,35 +1,43 @@
 package org.example.controller;
 
-import lombok.RequiredArgsConstructor;
+import org.example.dao.hibernate.VehicleDAO;
 import org.example.dto.RentCarDto;
+import org.example.model.Vehicle;
 import org.example.service.RentService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/rents")
-@RequiredArgsConstructor
 public class RentController {
 
-    private final RentService rentService;
+    private final VehicleDAO vehicleDAO;
 
-    @PostMapping("/rent")
-    public ResponseEntity<String> rentVehicle(@RequestBody RentCarDto request) {
-        boolean success = rentService.rentVehicle(request.getPlate(), request.getLogin());
-        if (success) {
-            return ResponseEntity.ok("Vehicle rented");
+    private RentService rentService;
+
+    public RentController(RentService rentService, VehicleDAO vehicleDAO) {
+        this.rentService = rentService;
+        this.vehicleDAO = vehicleDAO;
+    }
+    @GetMapping("/vehicle/{plate}")
+    public ResponseEntity<Vehicle> getVehicle(@PathVariable String plate){
+        Vehicle vehicle = rentService.getVehicle(plate);
+        if(vehicle != null){
+            return ResponseEntity.ok(vehicle);
         } else {
-            return ResponseEntity.badRequest().body("Failed to rent vehicle");
+            return ResponseEntity.notFound().build();
         }
     }
 
-    @PostMapping("/return")
-    public ResponseEntity<String> returnVehicle(@RequestBody RentCarDto request) {
-        boolean success = rentService.returnVehicle(request.getPlate(), request.getLogin());
+
+    @PostMapping("/rent")
+    public ResponseEntity<String> rentVehicle(@RequestBody RentCarDto request) {
+        boolean success = rentService.rentVehicle(request.getPlate(),request.getLogin());
         if (success) {
-            return ResponseEntity.ok("Vehicle returned");
+            return ResponseEntity.ok("Vehicle rented");
         } else {
-            return ResponseEntity.badRequest().body("Failed to return vehicle");
+            return ResponseEntity.badRequest().body("Failed");
         }
     }
 }

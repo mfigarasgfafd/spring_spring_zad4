@@ -11,11 +11,9 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    //private String rentedPlate;
-    @OneToOne(fetch = FetchType.EAGER) //default
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "rentedPlate", referencedColumnName = "plate")
     private Vehicle vehicle;
-
 
     public User(String login, String password, Role role, Vehicle vehicle) {
         this.login = login;
